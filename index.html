@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="libs/crafty.js"></script>
+	<script type="text/javascript" src="src/game.js"></script>
+	<script type="text/javascript" src = "src/scenes.js"></script>
+	<script type="text/javascript" src ="src/components.js"></script>
+	<script type="text/javascript" src = "src/game_logic.js"></script>
+	<link rel="stylesheet" type="text/css" href="libs/style.css">
+	<script type="text/javascript">
+		window.addEventListener('load', Game.start);
+	</script>
+	<style type="text/css" media="screen">
+		body {
+			background: black;
+			text-align: center;
+			color: #DDD;
+			font-family: Arial;
+		}
+
+		.controls {
+			color: #BBB;
+		}
+
+		#cr-stage { margin: 20px auto 0;}
+
+		.bottom a {
+			color:#AAA;
+		}
+	</style>
+</head>
+<body>
+	<h2>The Brixton</h2>
+	<p> A tale of Love and Phone Numbers</p>
+	<p class = "controls"> Controls: USe W, A, S, and D key or the Arrow Keys to Move Around</p>
+	<p class = "controls"> Press X to speak to other characters </p>
+	<div id = "cr-stage"></div>
+	<span> Time till Close:</span> <span id = '_time' class = 'class_stats'></span>
+	<span> Money:</span> <span id = '_money' class = 'class_stats'></span>
+	<span> Phone #s:</span> <span id = '_numbers' class = 'class_stats'></span>
+
+</body>
+</html>
+
+</body>
+</html>
