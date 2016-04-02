@@ -7,6 +7,12 @@
 function player_has_beer(player, npc){
 	// 2 Children : Nodes 
 	if (player.has_beer) {
+		npc.speak('thanks')
+		npc.quest_complete = true
+		player.has_beer = false
+		player.phone_numbers += 1
+		
+		update_stats(player)
 		return "QUEST COMPLETE"
 	} else {
 		npc.speak('intro')
@@ -26,9 +32,20 @@ function is_bartender(player, npc){
 
 function player_have_money(player, npc){
 	// 2 actions
-	if (player.has_money){
-		player.has_beer = true
-		return 'GIVE THE MAN A DRINK!'
+	if (player.money > 7){
+
+		if (player.has_beer == true){
+			// For right now he can only have one drink 
+			console.log("You already have a drink!")
+		} else {
+			npc.speak('intro')
+			player.has_beer = true
+			player.money = player.money - 7
+			update_stats(player)
+			return 'GIVE THE MAN A DRINK!'
+		}; 
+
+		
 	}else {
 		return "DUDE, your Broke!"
 	};
@@ -39,11 +56,45 @@ function is_girl(player, npc){
 	if (npc.name == "GIRL1"){
 		return player_has_beer(player, npc)
 	}else{
+		return is_priss(player, npc)
+	};
+};
+
+function is_priss(player, npc){
+	// 2 nodes: 2 actions
+	if (npc.name == "PRISS"){
+		return player_is_mixologist(player, npc)
+	}else{
 		return "He is speaking to other girls"
 	};
 };
+
+function player_is_mixologist(player, npc){
+	// 2 nodes: 2 actions
+	if (player.mixologist == true){
+		npc.speak('intrig');
+		player.phone_numbers += 1
+		update_stats(player)
+	}else{
+		npc.speak('intro')
+	};
+};
+
 
 function walk_tree(player, npc){
 	result = is_bartender(player, npc)
 	return result
 }
+
+
+function update_stats(player){
+	document.getElementById('_money').innerHTML = String(player.money)
+	document.getElementById('_numbers').innerHTML = String(player.phone_numbers)
+	if (player.has_beer == true){
+		drink_val = 1
+	}else{
+		drink_val = 0
+	}
+
+	document.getElementById('_drink').innerHTML = String(drink_val)
+};

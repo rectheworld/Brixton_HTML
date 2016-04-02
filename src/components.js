@@ -23,10 +23,55 @@ Crafty.c('Grid', {
 			});
 			return this; 
 		}
-	}
+	},
+
 
 }); // End of Grid Component 
 
+
+// A Zone comlonent 
+Crafty.c("Zone", {
+	init: function() {
+		this.requires('2D, Canvas, Grid');
+	},	
+
+	zone_space: {x:0, y:0, w:0, h:0},
+
+	zone: function(x,y,w,h){
+
+		this.zone_space = {
+		x: x * Game.map_grid.tile.width,
+		y: y * Game.map_grid.tile.height,
+		w : w * Game.map_grid.tile.height,
+		h : h * Game.map_grid.tile.height}
+		
+		return this.zone_space
+	},
+
+	TextFeatures: null,
+
+	displayText: function(text) {
+
+		this.TextFeatures = Crafty.e('2D, DOM, Text, KeyBoard')
+		.origin("center")
+		.attr({x: 192,
+			y: 192})
+		.text(text)
+		// .bind("KeyDown", function(e){
+		// 	console.log('key press ')
+		// 	if(e.key == 89){
+		// 		this.text('')
+		// 		console.log('Yes')
+
+		// 	}else if (e.key == 78){
+		// 		this.text('')
+		// 		console.log('No')				
+		// 	}
+		// });
+	
+	},
+
+});
 
 // Generic Actor Entity 
 Crafty.c('Actor', {
@@ -35,16 +80,16 @@ Crafty.c('Actor', {
 	},
 
 	displayText: function(text_x, text_y, text) {
-		TextFeatures = Crafty.e('2D, DOM, Text, KeyBoard')
+		ActorTextFeatures = Crafty.e('2D, DOM, Text, KeyBoard')
 		.attr({x: text_x,
 			y: text_y})
 		.text(text)
 		.bind("KeyDown", function(e){
-			if(e.key == 37 ||
+			if(e.key == 89 ||
 				e.key == 38 ||
 				e.key == 39 ||
 				e.key == 40){
-				TextFeatures.text("")
+				ActorTextFeatures.text("")
 			}
 		});
 
@@ -74,7 +119,7 @@ Crafty.c('PlayerCharacter', {
 						// console.log("SPEAK");
 						// console.log(current_npc.name);
 						console.log(walk_tree(this,current_npc))
-					}
+					} 
 				}
 
 			}
@@ -97,12 +142,44 @@ Crafty.c('PlayerCharacter', {
 			}
 		});
 
+		// Check if in mixologist zone 
+		this.bind("EnterFrame", function(eventData){
+			// Check if player is in the mix zone
+			if (this.intersect(mix_zone.zone_space.x, mix_zone.zone_space.y, mix_zone.zone_space.w, mix_zone.zone_space.h)){
+				console.log(true)
+				if (mix_zone.TextFeatures === null){
+					mix_zone.displayText("Make a Custom Drink?")
+
+					this.bind("KeyDown", mix_callback = function(e){
+						console.log('key press ')
+						if(e.key == 89){
+							mix_zone.TextFeatures.text('')
+							console.log('Yes')
+							this.mixologist = true;
+							this.unbind("KeyDown", mix_callback)
+						}else if (e.key == 78){
+							mix_zone.TextFeatures.text('')
+							console.log('No')				
+						}
+					});
+
+				};
+			} else if (mix_zone.TextFeatures != null){
+				mix_zone.TextFeatures.destroy();
+				mix_zone.TextFeatures = null;
+			}
+		});
 
 	},
 	
 	/// Variable Zoo 
 	has_beer: false,
-	has_money: false,
+	money: 50,
+	phone_numbers: 0,
+	/// Indicates if player has made a custon drink
+	mixologist: false,
+
+
 
 
 	stopOnSolids: function() {
@@ -141,6 +218,23 @@ Crafty.c("Girl1", {
 })
 
 
+Crafty.c("Priss", {
+	init: function() {
+		this.requires('Actor, spr_priss, Solid')
+	},
+
+	name: 'PRISS',
+	quest_complete: false,
+	speakables: {'intro': 'Oh.... hey.',
+				'intrig': 'You really know your drinks, here is my number'},
+
+	speak: function(speakable_key){
+		text = this.speakables[speakable_key]
+		text_x = this.x - 32;
+		text_y = this.y - 32;
+		this.displayText(text_x, text_y, text)
+	},
+})
 
 Crafty.c("Bartender", {
 	init: function() {
@@ -148,6 +242,15 @@ Crafty.c("Bartender", {
 	},
 
 	name:"BARTENDER",
+
+	speakables: {'intro': 'Have a Drink!'},
+
+	speak: function(speakable_key){
+		text = this.speakables[speakable_key]
+		text_x = this.x - 32;
+		text_y = this.y;
+		this.displayText(text_x, text_y, text)
+	},
 })
 
 

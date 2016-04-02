@@ -51,6 +51,7 @@ Crafty.scene('Loading', function(){
 	   	Crafty.sprite(32, 32, 'assets/bar_spritesheet.png', {
 		  spr_bar_left: [0,0],
 		  spr_bar_right: [6,0],
+		  spr_priss: [2,3]
 	     });
 
 	   	Crafty.sprite(224, 16, 'assets/bar_spritesheet.png', {
@@ -67,7 +68,7 @@ Crafty.scene('Loading', function(){
 
 /// Lets Create a Scene for the main game play bit 
 
-Crafty.scene('Main', function(){
+MAIN = Crafty.scene('Main', function(){
 
 	/// Set up for the grid 
 	this.occupied = new Array(Game.map_grid.width);
@@ -105,15 +106,23 @@ Crafty.scene('Main', function(){
 
 
 	// Place npcs 
-	this.bartender = Crafty.e('Bartender').at(4,0)
+	this.bartender = Crafty.e('Bartender').at(3,0)
 	this.girl1 = Crafty.e('Girl1').at(5,7)
+	this.priss = Crafty.e('Priss').at(1,2)
 
 
-	this.player.npc_list = [this.bartender, this.girl1] 
+	this.player.npc_list = [this.bartender, this.girl1, this.priss] 
+
+	// Moxologist zones 
+	mix_zone = Crafty.e('Zone')
+
+	mix_zone.zone(4,0,2,1)
+
 
 
 	// Initlize Stats
 	document.getElementById('_time').innerHTML = "10:00"
 	document.getElementById('_money').innerHTML = "$ 50"
 	document.getElementById('_numbers').innerHTML = "0"
+	document.getElementById('_drink').innerHTML = "0"
 });
