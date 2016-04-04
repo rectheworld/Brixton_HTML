@@ -132,6 +132,7 @@ Crafty.c('PlayerCharacter', {
 							everyonesTextbox.displayText("You made a Hispster Drank");
 							console.log('Yes')
 							this.mixologist = true;
+							this.has_beer = true;
 							this.unbind("KeyDown", mix_callback)
 						}else if (e.key == 78){
 							everyonesTextbox.removeText();
@@ -209,6 +210,32 @@ Crafty.c("Priss", {
 	speak: function(speakable_key){
 		text = this.speakables[speakable_key]
 		everyonesTextbox.displayText(text)
+	},
+})
+
+
+Crafty.c("Wallflower", {
+	init: function() {
+		this.requires('Actor, spr_wallflower, Solid')
+	},
+
+	name: 'WALLFLOWER',
+	quest_complete: false,
+	speak_num: 1,
+
+	speakables: {'1': '......',
+				'2': "... Sorry I'm just waiting for someone",
+				'3': '... please stop talking to me',
+				'4': 'If I give you my number will you leave me alone? Ok here ya go.',
+				'5': '.......'},
+
+	speak: function(speakable_key){
+		if (this.speak_num < 5){
+			this.speak_num += 1
+		}
+		text = this.speakables[String(this.speak_num)]
+		everyonesTextbox.displayText(text)
+		return this.speak_num;
 	},
 })
 
