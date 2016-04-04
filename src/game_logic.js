@@ -72,15 +72,32 @@ function is_priss(player, npc){
 	if (npc.name == "PRISS"){
 		return player_has_beer(player, npc)
 	}else{
+		return is_wallflower(player, npc)
+	};
+};
+
+function is_wallflower(player, npc){
+	// 2 nodes: 2 actions
+	if (npc.name == "WALLFLOWER"){
+		num_visitsed = npc.speak(null)
+
+		if (num_visitsed == 5){
+			npc.quest_complete = true
+			player.phone_numbers += 1
+			update_stats(player)			
+		}
+	}else{
 		return "He is speaking to other girls"
 	};
 };
+
 
 function player_is_mixologist(player, npc){
 	// 2 nodes: 2 actions
 	if (player.mixologist == true){
 		npc.speak('intrig');
 		player.phone_numbers += 1
+		player.has_beer = true
 		update_stats(player)
 	}else{
 		npc.speak('player_has_beer')

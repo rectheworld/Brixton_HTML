@@ -52,7 +52,8 @@ Crafty.scene('Loading', function(){
 	   	Crafty.sprite(32, 32, 'assets/bar_spritesheet.png', {
 		  spr_bar_left: [0,0],
 		  spr_bar_right: [6,0],
-		  spr_priss: [2,3]
+		  spr_priss: [2,3],
+		  spr_wallflower: [3,3]
 	     });
 
 	   	Crafty.sprite(224, 16, 'assets/bar_spritesheet.png', {
@@ -114,9 +115,10 @@ MAIN = Crafty.scene('Main', function(){
 	this.bartender = Crafty.e('Bartender').at(5,0)
 	this.girl1 = Crafty.e('Girl1').at(7,7)
 	this.priss = Crafty.e('Priss').at(3,2)
+	this.wallflower = Crafty.e('Wallflower').at(14,4)
 
 
-	this.player.npc_list = [this.bartender, this.girl1, this.priss] 
+	this.player.npc_list = [this.bartender, this.girl1, this.priss, this.wallflower] 
 
 	// Moxologist zones 
 	mix_zone = Crafty.e('Zone')
