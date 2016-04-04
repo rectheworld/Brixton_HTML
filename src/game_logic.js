@@ -7,13 +7,20 @@
 function player_has_beer(player, npc){
 	// 2 Children : Nodes 
 	if (player.has_beer) {
-		npc.speak('thanks')
-		npc.quest_complete = true
-		player.has_beer = false
-		player.phone_numbers += 1
-		
-		update_stats(player)
-		return "QUEST COMPLETE"
+
+		switch (npc.name){
+			case 'GIRL1':
+				npc.speak('player_has_beer')
+				npc.quest_complete = true
+				player.has_beer = false
+				player.phone_numbers += 1
+				update_stats(player)
+				break;
+			case 'PRISS':
+				player_is_mixologist(player, npc)
+				break;
+		}
+
 	} else {
 		npc.speak('intro')
 		return "I am talking to a girl"
@@ -63,7 +70,7 @@ function is_girl(player, npc){
 function is_priss(player, npc){
 	// 2 nodes: 2 actions
 	if (npc.name == "PRISS"){
-		return player_is_mixologist(player, npc)
+		return player_has_beer(player, npc)
 	}else{
 		return "He is speaking to other girls"
 	};
@@ -76,7 +83,7 @@ function player_is_mixologist(player, npc){
 		player.phone_numbers += 1
 		update_stats(player)
 	}else{
-		npc.speak('intro')
+		npc.speak('player_has_beer')
 	};
 };
 
@@ -84,7 +91,7 @@ function player_is_mixologist(player, npc){
 function walk_tree(player, npc){
 	result = is_bartender(player, npc)
 	return result
-}
+};
 
 
 function update_stats(player){
@@ -98,3 +105,5 @@ function update_stats(player){
 
 	document.getElementById('_drink').innerHTML = String(drink_val)
 };
+
+

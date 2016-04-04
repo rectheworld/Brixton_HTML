@@ -57,42 +57,17 @@ Crafty.c("Zone", {
 		.attr({x: 192,
 			y: 192})
 		.text(text)
-		// .bind("KeyDown", function(e){
-		// 	console.log('key press ')
-		// 	if(e.key == 89){
-		// 		this.text('')
-		// 		console.log('Yes')
-
-		// 	}else if (e.key == 78){
-		// 		this.text('')
-		// 		console.log('No')				
-		// 	}
-		// });
-	
 	},
 
 });
+
+
+
 
 // Generic Actor Entity 
 Crafty.c('Actor', {
 	init: function() {
 		this.requires('2D, Canvas, Grid');
-	},
-
-	displayText: function(text_x, text_y, text) {
-		ActorTextFeatures = Crafty.e('2D, DOM, Text, KeyBoard')
-		.attr({x: text_x,
-			y: text_y})
-		.text(text)
-		.bind("KeyDown", function(e){
-			if(e.key == 89 ||
-				e.key == 38 ||
-				e.key == 39 ||
-				e.key == 40){
-				ActorTextFeatures.text("")
-			}
-		});
-
 	},
 });
 
@@ -147,28 +122,32 @@ Crafty.c('PlayerCharacter', {
 			// Check if player is in the mix zone
 			if (this.intersect(mix_zone.zone_space.x, mix_zone.zone_space.y, mix_zone.zone_space.w, mix_zone.zone_space.h)){
 				console.log(true)
-				if (mix_zone.TextFeatures === null){
-					mix_zone.displayText("Make a Custom Drink?")
-
-					this.bind("KeyDown", mix_callback = function(e){
+				if (everyonesTextbox.zoneText === false){
+						text = 'Make a Custon Drink? (y/n)'
+						everyonesTextbox.displayText(text)
+						everyonesTextbox.zoneText = true;
+						this.bind("KeyDown", mix_callback = function(e){
 						console.log('key press ')
 						if(e.key == 89){
-							mix_zone.TextFeatures.text('')
+							everyonesTextbox.displayText("You made a Hispster Drank");
 							console.log('Yes')
 							this.mixologist = true;
 							this.unbind("KeyDown", mix_callback)
 						}else if (e.key == 78){
-							mix_zone.TextFeatures.text('')
+							everyonesTextbox.removeText();
 							console.log('No')				
 						}
 					});
 
 				};
-			} else if (mix_zone.TextFeatures != null){
-				mix_zone.TextFeatures.destroy();
-				mix_zone.TextFeatures = null;
+			// if there is somthing written and we move away, remove it 
+			} else {
+				if (everyonesTextbox.zoneText === true){
+				everyonesTextbox.removeText();
+				everyonesTextbox.zoneText = false;
+				}
 			}
-		});
+		}); // end of enter frame function 
 
 	},
 	
@@ -207,13 +186,11 @@ Crafty.c("Girl1", {
 	name: 'GIRL1',
 	quest_complete: false,
 	speakables: {'intro': 'This drink is gross',
-				'thanks': 'Thank you, your a nice guy, here is my number'},
+				'player_has_beer': 'Thank you, your a nice guy, here is my number'},
 
 	speak: function(speakable_key){
 		text = this.speakables[speakable_key]
-		text_x = this.x - 32;
-		text_y = this.y - 32;
-		this.displayText(text_x, text_y, text)
+		everyonesTextbox.displayText(text)
 	},
 })
 
@@ -226,13 +203,12 @@ Crafty.c("Priss", {
 	name: 'PRISS',
 	quest_complete: false,
 	speakables: {'intro': 'Oh.... hey.',
+				'player_has_beer': "Is that a beer? ugg that's so Mainstream",
 				'intrig': 'You really know your drinks, here is my number'},
 
 	speak: function(speakable_key){
 		text = this.speakables[speakable_key]
-		text_x = this.x - 32;
-		text_y = this.y - 32;
-		this.displayText(text_x, text_y, text)
+		everyonesTextbox.displayText(text)
 	},
 })
 
@@ -247,9 +223,7 @@ Crafty.c("Bartender", {
 
 	speak: function(speakable_key){
 		text = this.speakables[speakable_key]
-		text_x = this.x - 32;
-		text_y = this.y;
-		this.displayText(text_x, text_y, text)
+		everyonesTextbox.displayText(text)
 	},
 })
 
@@ -346,10 +320,6 @@ Crafty.c('Womens_BR', {
 
 
 
-
-
-
-
 /// Collision detection Code http://buildnewgames.com/introduction-to-crafty/
 
 /// Register a stop-motion function to be called
@@ -357,3 +327,54 @@ Crafty.c('Womens_BR', {
 
 
 
+// Text Box Compnent 
+Crafty.c('Textbox', {
+	init: function(){
+		this.requires('2D, DOM, spr_txt_box, Solid, Text, KeyBoard')
+		.attr({x: 0,
+			y: 320})
+		.create_Textfeatures()
+
+	},
+
+	create_Textfeatures: function(){
+
+		this.TextFeatures = Crafty.e('2D, DOM, Text, KeyBoard, Grid')
+			.attr({x: 64,
+				y: 320,
+			 	w:352,
+			 	h:96})
+			.origin('center')
+			.textFont({size: '20px', family: 'Arial'})
+			.textColor('#000000')
+			.bind("KeyDown", function(e){
+			if(e.key == 37 ||
+				e.key == 38 ||
+				e.key == 39 ||
+				e.key == 40){
+				this.text("")
+
+			}
+		});
+
+	},
+
+	textPresent: false,
+	zoneText: false,
+
+	displayText: function(text) {
+		this.TextFeatures.text(text);
+		this.textPresent = true;
+	},
+
+	removeText: function(){
+		this.TextFeatures.text("");
+		this.textPresent = false;
+	},
+
+}); // End text box 
+
+
+function create_globals() {
+	everyonesTextbox = Crafty.e('Textbox');
+};

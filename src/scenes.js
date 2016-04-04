@@ -12,7 +12,8 @@ Crafty.scene('Loading', function(){
 	Crafty.load([
 		/// list of paths to geaphics ( Should really put evrything int oa spritesheet )
 		'assets/spritesheet1.png',
-		'assets/bar_spritesheet.png'
+		'assets/bar_spritesheet.png',
+		'assets/textbox.png'
 		], function(){
 	    // Once the images are loaded...
 
@@ -58,6 +59,10 @@ Crafty.scene('Loading', function(){
 		  spr_bar_col: [0,4],
 	     });
 
+	   	Crafty.sprite(544, 96, 'assets/textbox.png', {
+		  spr_txt_box: [0,0],
+	     });
+
 	    Crafty.scene('Main');
 		}); 
 
@@ -88,35 +93,38 @@ MAIN = Crafty.scene('Main', function(){
 	}
 
 	/// Replace certain cells with tables 
-	create_table(10,3)
-	create_table(10,5)
-	create_table(10,7)
+	create_table(13,4)
+	create_table(13,6)
+	create_table(13,8)
 
-	Crafty.e('DJ_Booth').at(1,8)
+	Crafty.e('DJ_Booth').at(3,8)
 	Crafty.e('Exit').at(0,4)
 
-	Crafty.e('Mens_BR').at(10,0)
-	Crafty.e('Womens_BR').at(11,0)
+	Crafty.e('Mens_BR').at(12,0)
+	Crafty.e('Womens_BR').at(13,0)
 
 	// Create Bar 
-	create_bar(1,1)
+	create_bar(3,1)
 
 	/// Place character 
-	this.player = Crafty.e('PlayerCharacter').at(5,5); 
+	this.player = Crafty.e('PlayerCharacter').at(7,5); 
 
 
 	// Place npcs 
-	this.bartender = Crafty.e('Bartender').at(3,0)
-	this.girl1 = Crafty.e('Girl1').at(5,7)
-	this.priss = Crafty.e('Priss').at(1,2)
+	this.bartender = Crafty.e('Bartender').at(5,0)
+	this.girl1 = Crafty.e('Girl1').at(7,7)
+	this.priss = Crafty.e('Priss').at(3,2)
 
 
 	this.player.npc_list = [this.bartender, this.girl1, this.priss] 
 
 	// Moxologist zones 
 	mix_zone = Crafty.e('Zone')
+	mix_zone.zone(7,0,1,1)
 
-	mix_zone.zone(4,0,2,1)
+	// Create Gloabals
+	create_globals()
+	
 
 
 
