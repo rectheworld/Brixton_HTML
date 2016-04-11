@@ -13,7 +13,8 @@ Crafty.scene('Loading', function(){
 		/// list of paths to geaphics ( Should really put evrything int oa spritesheet )
 		'assets/spritesheet1.png',
 		'assets/bar_spritesheet.png',
-		'assets/textbox.png'
+		'assets/textbox.png',
+		'assets/barback_sprites.png'
 		], function(){
 	    // Once the images are loaded...
 
@@ -64,6 +65,18 @@ Crafty.scene('Loading', function(){
 		  spr_txt_box: [0,0],
 	     });
 
+	   	Crafty.sprite(544, 416, 'assets/barback_sprites.png', {
+	   		spr_barback: [0,0],
+	   		spr_glass_empty: [1,0],
+	   		spr_glass_half_empty:[2,0],
+	   		spr_glass_full:[0,1],
+	   		spr_lemon:[1,1],
+	   		spr_lime:[2,1],
+	   		spr_orange:[0,2],
+	   		spr_cherry:[1,2]
+
+	   	});
+
 	    Crafty.scene('Main');
 		}); 
 
@@ -108,7 +121,7 @@ MAIN = Crafty.scene('Main', function(){
 	create_bar(3,1)
 
 	/// Place character 
-	this.player = Crafty.e('PlayerCharacter').at(7,5); 
+	this.player = Crafty.e('PlayerCharacter').at(Game.tracker.position_x, Game.tracker.position_y); 
 
 
 	// Place npcs 
@@ -119,6 +132,10 @@ MAIN = Crafty.scene('Main', function(){
 
 
 	this.player.npc_list = [this.bartender, this.girl1, this.priss, this.wallflower] 
+	this.player.money = Game.tracker.money
+	this.player.mixologist = Game.tracker.mixologist
+	this.player.phone_numbers = Game.tracker.phone_numbers
+	this.player.has_beer = Game.tracker.has_beer
 
 	// Moxologist zones 
 	mix_zone = Crafty.e('Zone')
@@ -128,11 +145,18 @@ MAIN = Crafty.scene('Main', function(){
 	create_globals()
 	
 
-
+	console.log(Game.tracker)
 
 	// Initlize Stats
 	document.getElementById('_time').innerHTML = "10:00"
-	document.getElementById('_money').innerHTML = "$ 50"
-	document.getElementById('_numbers').innerHTML = "0"
+	document.getElementById('_money').innerHTML = this.player.money
+	document.getElementById('_numbers').innerHTML = this.player.phone_numbers
 	document.getElementById('_drink').innerHTML = "0"
+});
+
+
+// Scene for drink making 
+MAIN = Crafty.scene('Mixing', function(){
+	this.bar_back = Crafty.e('Mix_Main').at(0,0)
+	//this.empty = Crafty.e('Empty_Glass').at(0,0)
 });

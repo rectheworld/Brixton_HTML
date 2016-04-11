@@ -93,7 +93,10 @@ Crafty.c('PlayerCharacter', {
 					if (this.intersect(current_npc.x - 16, current_npc.y -16 , current_npc.w + 32, current_npc.h + 32) == true){
 						// console.log("SPEAK");
 						// console.log(current_npc.name);
+						console.log('Player Mix', this.mixologist)
 						console.log(walk_tree(this,current_npc))
+						Game.update_tracker(this)
+						console.log("Game Tracker After" ,Game.tracker)
 					} 
 				}
 
@@ -127,16 +130,14 @@ Crafty.c('PlayerCharacter', {
 						everyonesTextbox.displayText(text)
 						everyonesTextbox.zoneText = true;
 						this.bind("KeyDown", mix_callback = function(e){
-						console.log('key press ')
 						if(e.key == 89){
-							everyonesTextbox.displayText("You made a Hispster Drank");
-							console.log('Yes')
-							this.mixologist = true;
-							this.has_beer = true;
+							Crafty.scene("Mixing")
+							//everyonesTextbox.displayText("You made a Hispster Drank");
+							//this.mixologist = true;
+							//this.has_beer = true;
 							this.unbind("KeyDown", mix_callback)
 						}else if (e.key == 78){
-							everyonesTextbox.removeText();
-							console.log('No')				
+							everyonesTextbox.removeText();		
 						}
 					});
 
@@ -153,11 +154,11 @@ Crafty.c('PlayerCharacter', {
 	},
 	
 	/// Variable Zoo 
-	has_beer: false,
-	money: 50,
-	phone_numbers: 0,
+	//has_beer: false,
+	//money: 77,
+	//phone_numbers: 77,
 	/// Indicates if player has made a custon drink
-	mixologist: false,
+	//mixologist: false,
 
 
 
@@ -405,3 +406,154 @@ Crafty.c('Textbox', {
 function create_globals() {
 	everyonesTextbox = Crafty.e('Textbox');
 };
+
+
+/// These are for the mixology scene 
+/// Background Component
+Crafty.c('Mix_Main', {
+	init: function() {
+		this.requires('2D, Canvas, Grid, spr_barback, KeyDown, Mouse')
+		.bind(this.populate_bottles_list())
+		.bind("KeyDown", function(e){
+			if(e.key == 88){
+				if (this.drink_finished == true){
+					Game.tracker.mixologist = true 
+					Game.tracker.has_beer = true;
+					Game.tracker.position_x = 8;
+					Game.tracker.position_y = 0;
+				}
+				Crafty.scene("Main")
+			}
+		})
+	.bind("Click", function(e){
+		var this_x = e.realX
+		var this_y = e.realY
+		mini_rect = {'_x':this_x, '_y':this_y, '_w':1, '_h':1}
+		this.check_col(mini_rect)
+		
+
+	})// end of bind
+		Crafty.e('Empty_Glass').at(0,0)
+
+	},
+
+	/// Bool to track the progress of the drink 
+	drink_finished: false,
+
+	/// Rect_Zones 
+	cola_rect: {'_x':18, '_y':204, '_w':45, '_h':80},
+	oj_rect: {'_x':70, '_y':150, '_w':45, '_h':80},
+	soda_rect: {'_x':127, '_y':127, '_w':45, '_h':80},
+
+	blue_rect: {'_x':170, '_y':28, '_w':45, '_h':165},
+	green_rect: {'_x':257, '_y':28, '_w':45, '_h':165},
+	cream_rect: {'_x':341, '_y':28, '_w':45, '_h':165},
+
+	lemon_rect: {'_x':423, '_y':128, '_w':36, '_h':30},
+	lime_rect: {'_x':449, '_y':142, '_w':33, '_h':36},
+	cherry_rect: {'_x':494, '_y':156, '_w':21, '_h':44},
+	orange_rect: {'_x':520, '_y':172, '_w':23, '_h':60},
+
+	bottles_list: [],
+
+	progress: {1: null, 2:'Half_Empty_Glass', 3: 'Full_Glass',
+	 "Lemon": 'Lemon', "Lime":'Lime', "Orange":'Orange', "Cherry":'Cherry'},
+
+	progress_count: 1,
+
+	populate_bottles_list: function(){
+		this.bottles_list.push(this.cola_rect);
+		this.bottles_list.push(this.oj_rect);
+		this.bottles_list.push(this.soda_rect);
+		this.bottles_list.push(this.blue_rect);
+		this.bottles_list.push(this.green_rect);
+		this.bottles_list.push(this.cream_rect);
+		this.bottles_list.push(this.lemon_rect);
+		this.bottles_list.push(this.lime_rect);
+		this.bottles_list.push(this.cherry_rect);
+		this.bottles_list.push(this.orange_rect);
+	},
+
+	check_col: function(mini_rect){
+		for (var i = 0; i < this.bottles_list.length; i++){
+		 this_bottle = this.bottles_list[i]
+		// in x axis
+		if (mini_rect._x <=  this_bottle._x + this_bottle._w && mini_rect._x >=  this_bottle._x){
+			// Check y 
+			if (mini_rect._y <=  this_bottle._y + this_bottle._h && mini_rect._y >=  this_bottle._y){
+				if (this.progress_count < 3){
+					this.progress_count += 1
+					console.log(this.progress_count)
+					Crafty.e(this.progress[this.progress_count]).at(0,0)
+				}else{
+					if (i == 6){
+						Crafty.e('Lemon').at(0,0)	
+					}else if (i == 7){
+						Crafty.e('Lime').at(0,0)
+					}else if (i == 8){
+						Crafty.e('Cherry').at(0,0)
+					}else if (i == 9){
+						Crafty.e('Orange').at(0,0)
+					}
+
+					this.drink_finished = true
+				}
+
+				break 
+			}
+		}// End of Checks 
+
+		};
+	}, // end col function
+
+
+});
+
+Crafty.c('Empty_Glass', {
+	init: function() {
+		this.requires('2D, Canvas, Grid, spr_glass_empty, KeyDown')
+
+	},
+});
+
+Crafty.c('Half_Empty_Glass', {
+	init: function() {
+		this.requires('2D, Canvas, Grid, spr_glass_half_empty, KeyDown')
+
+	},
+});
+
+Crafty.c('Full_Glass', {
+	init: function() {
+		this.requires('2D, Canvas, Grid, spr_glass_full, KeyDown')
+
+	},
+});
+
+Crafty.c('Lemon', {
+	init: function() {
+		this.requires('2D, Canvas, Grid, spr_lemon, KeyDown')
+
+	},
+});
+
+Crafty.c('Lime', {
+	init: function() {
+		this.requires('2D, Canvas, Grid, spr_lime, KeyDown')
+
+	},
+});
+
+Crafty.c('Orange', {
+	init: function() {
+		this.requires('2D, Canvas, Grid, spr_orange, KeyDown')
+
+	},
+});
+
+Crafty.c('Cherry', {
+	init: function() {
+		this.requires('2D, Canvas, Grid, spr_cherry, KeyDown')
+
+	},
+});

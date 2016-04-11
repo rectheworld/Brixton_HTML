@@ -23,6 +23,12 @@ Game = {
 		return this.map_grid.height * this.map_grid.tile.height;
 	},
 
+	tracker: {'phone_numbers': 0, 'money': 10, 'mixologist': false, 'has_beer':false, 'position_x': 7, 'position_y': 5},
+
+	update_tracker: function(player){
+		this.tracker = {'phone_numbers': player.phone_numbers, 'money': player.money, 'mixologist': player.mixologist, 'has_beer': player.has_beer}
+	},
+
 	/// Start the Game 
 	start: function(){
 		//// Start Crafty and set a background color 
@@ -35,8 +41,10 @@ Game = {
 		/// Set a background color
 		Crafty.background('rgb(125, 69, 5)');
 
-		// Start Game Scene
+		// Start Game Scene		
 		Crafty.scene('Loading');
 	}
 
 };/// End of Game Braket 
+
+/// 544 x 416

@@ -94,6 +94,8 @@ function is_wallflower(player, npc){
 
 function player_is_mixologist(player, npc){
 	// 2 nodes: 2 actions
+	console.log('HERE')
+	console.log(player.mixologist)
 	if (player.mixologist == true){
 		npc.speak('intrig');
 		player.phone_numbers += 1
