@@ -183,6 +183,24 @@ Crafty.c('PlayerCharacter', {
 Crafty.c("Girl1", {
 	init: function() {
 		this.requires('Actor, spr_girl1, Solid')
+		.bind("EnterFrame", function(){
+			test_value = Math.floor((Math.random() * 500) + 1);
+
+			// on in 50 shot of npc moving
+			if (test_value == 1){
+				console.log("Here")
+				/// Pick a place in the zone 
+				i = Math.floor((Math.random() * this.walk_zone.length)); 
+
+				console.log(this.walk_zone[i])
+				//this.tween({})
+
+
+			}
+			
+		}),/// End enter frame 
+		console.log(this.at())
+
 	},
 
 	name: 'GIRL1',
@@ -194,6 +212,9 @@ Crafty.c("Girl1", {
 		text = this.speakables[speakable_key]
 		everyonesTextbox.displayText(text)
 	},
+
+	walk_zone: [(6,5), (7,5), (8,5), (6,6), (7,6), (8,6), (6,7), (7,7), (8,7)],
+
 })
 
 
