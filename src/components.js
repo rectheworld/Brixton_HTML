@@ -89,8 +89,8 @@ Crafty.c('PlayerCharacter', {
 
 
 					if (this.intersect(current_npc.x - 1, current_npc.y -1 , current_npc.w + 1, current_npc.h + 1) == true){
-						walk_tree(this,current_npc)
-						Game.update_tracker(this, current_npc)
+/*						walk_tree(this,current_npc)
+						Game.update_tracker(this, current_npc)*/
 						current_npc.stopWalk()
 						console.log(current_npc)
 
@@ -195,11 +195,16 @@ Crafty.c('PlayerCharacter', {
 
 Crafty.c("Girl1", {
 	init: function() {
-		this.requires('Actor, spr_girl1, Solid, Tween,Collision')
+		this.requires('Actor, spr_girl1, Solid, Tween,Collision, SpriteAnimation')
+		.reel('UP', 500, 4, 0, 3)
+		.reel('RIGHT', 500, 4, 1, 3)
+		.reel('DOWN', 500, 4, 2, 3)
+		.reel('LEFT', 500, 4, 3, 3)
 		.bind("EnterFrame", function(){
 			test_value = Math.floor((Math.random() * 500) + 1);
-			///console.log(this.walk_zone)
+			//console.log(this.x, this.y)
 			// on in 50 shot of npc moving
+
 			if (test_value == 1){
 
 				this.walk()
@@ -230,6 +235,29 @@ Crafty.c("Girl1", {
 		x_dest = this.walk_zone[i][0]* Game.map_grid.tile.width
 		y_dest = this.walk_zone[i][1] * Game.map_grid.tile.height
 		this.tween({x: x_dest , y: y_dest},2000)
+
+		/// pic the right animation for the dicetion 
+		x_current = this.x 
+		y_current = this.y 
+
+
+		/// give preference to left/right movement 
+		if(x_dest > x_current){
+			this.animate('RIGHT',-1)
+		}else if (x_dest < x_current){
+			this.animate('LEFT',-1)
+
+		}else if(y_dest < y_current){
+			this.animate('UP',-1)
+		}else if(y_dest > y_current){
+			this.animate('DOWN',-1)
+		}
+
+
+		
+		this.bind('TweenEnd', function(axis){
+			this.pauseAnimation()
+		})
 	},
 
 	stopWalk: function(){
@@ -254,6 +282,10 @@ Crafty.c("Priss", {
 		text = this.speakables[speakable_key]
 		everyonesTextbox.displayText(text)
 	},
+
+	stopWalk: function(){
+		null
+	}
 })
 
 
@@ -286,11 +318,18 @@ Crafty.c("Wallflower", {
 			return this.speak_num;
 	}
 	},
+	stopWalk: function(){
+		null
+	}
 })
 
 Crafty.c("Bartender", {
 	init: function() {
-		this.requires('Actor, spr_bartender, Solid,Tween')
+		this.requires('Actor, spr_bartender, Solid,Tween, SpriteAnimation')
+		.reel('UP', 500, 7, 0, 3)
+		.reel('RIGHT', 500, 7, 1, 3)
+		.reel('DOWN', 500, 7, 2, 3)
+		.reel('LEFT', 500, 7, 3, 3)
 		.bind("EnterFrame", function(){
 			test_value = Math.floor((Math.random() * 500) + 1);
 			///console.log(this.walk_zone)
@@ -322,6 +361,28 @@ Crafty.c("Bartender", {
 		x_dest = this.walk_zone[i][0]* Game.map_grid.tile.width
 		y_dest = this.walk_zone[i][1] * Game.map_grid.tile.height
 		this.tween({x: x_dest , y: y_dest},2000)
+
+		x_current = this.x 
+		y_current = this.y 
+
+
+		/// give preference to left/right movement 
+		if(x_dest > x_current){
+			this.animate('RIGHT',-1)
+		}else if (x_dest < x_current){
+			this.animate('LEFT',-1)
+		}else if(y_dest < y_current){
+			this.animate('UP',-1)
+		}else if(y_dest > y_current){
+			this.animate('DOWN',-1)
+		}
+
+
+		
+		this.bind('TweenEnd', function(axis){
+			this.animate("DOWN",1)
+			this.pauseAnimation()
+		})
 	},
 
 	stopWalk: function(){

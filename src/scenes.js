@@ -11,6 +11,7 @@ Crafty.scene('Loading', function(){
 	// Load all the graphics here 
 	Crafty.load([
 		/// list of paths to geaphics ( Should really put evrything int oa spritesheet )
+		'assets/spritesheet3.png',
 		'assets/spritesheet1.png',
 		'assets/bar_spritesheet.png',
 		'assets/textbox.png',
@@ -27,14 +28,14 @@ Crafty.scene('Loading', function(){
 
 	    // Define the PC's sprite to be the first sprite in the third row of the
 	    //  animation sprite map
-	    Crafty.sprite(32, 'assets/spritesheet1.png', {
+	    Crafty.sprite(32, 'assets/spritesheet3.png', {
 	      spr_player:  [0,2],
 	      spr_floor: [0,4],
 	      spr_table: [1,4],
 	      spr_mens: [2,4],
 	      spr_womens:[2,5],
-	      spr_bartender:[3,5],
-	      spr_girl1:[3,4]
+	      spr_bartender:[8,2],
+	      spr_girl1:[5,2]
 	    });
 
 	    Crafty.sprite(32, 16, 'assets/spritesheet1.png', {
