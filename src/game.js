@@ -23,10 +23,32 @@ Game = {
 		return this.map_grid.height * this.map_grid.tile.height;
 	},
 
-	tracker: {'phone_numbers': 0, 'money': 10, 'mixologist': false, 'has_beer':false, 'position_x': 7, 'position_y': 5},
+	tracker: {
+	'phone_numbers': 0, 
+	'money': 10, 
+	'mixologist': false, 
+	'has_beer':false, 
+	'position_x': 7, 
+	'position_y': 5,
+	'GIRL1': false,
+	'PRISS': false,
+	'WALLFLOWER': false
+	},
 
-	update_tracker: function(player){
-		this.tracker = {'phone_numbers': player.phone_numbers, 'money': player.money, 'mixologist': player.mixologist, 'has_beer': player.has_beer}
+	update_tracker: function(player, npc){
+
+/*		console.log(this_npc)
+		this.tracker = {
+		'phone_numbers': player.phone_numbers, 
+		'money': player.money, 
+		'mixologist': player.mixologist, 
+		'has_beer': player.has_beer}*/
+		
+		this.tracker.phone_numbers = player.phone_numbers 
+		this.tracker.money = player.money
+		this.tracker.mixologist = player.mixologist
+		has_beer = player.has_beer
+		this.tracker[npc.name] = npc.quest_complete
 	},
 
 	/// Start the Game 

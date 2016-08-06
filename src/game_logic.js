@@ -15,6 +15,7 @@ function player_has_beer(player, npc){
 				player.has_beer = false
 				player.phone_numbers += 1
 				update_stats(player)
+
 				break;
 			case 'PRISS':
 				player_is_mixologist(player, npc)
@@ -28,14 +29,14 @@ function player_has_beer(player, npc){
 };
 
 
-function is_bartender(player, npc){
-	// 1 Action 1 Node
-	if (npc.name == 'BARTENDER'){
-		return player_have_money(player, npc)
-	} else {
-		return is_girl(player, npc)
-	};
-};
+// function is_bartender(player, npc){
+// 	// 1 Action 1 Node
+// 	if (npc.name == 'BARTENDER'){
+// 		return player_have_money(player, npc)
+// 	} else {
+// 		return is_girl(player, npc)
+// 	};
+// };
 
 function player_have_money(player, npc){
 	// 2 actions
@@ -58,23 +59,23 @@ function player_have_money(player, npc){
 	};
 };
 
-function is_girl(player, npc){
-	// 2 nodes: 2 actions
-	if (npc.name == "GIRL1"){
-		return player_has_beer(player, npc)
-	}else{
-		return is_priss(player, npc)
-	};
-};
+// function is_girl(player, npc){
+// 	// 2 nodes: 2 actions
+// 	if (npc.name == "GIRL1"){
+// 		return player_has_beer(player, npc)
+// 	}else{
+// 		return is_priss(player, npc)
+// 	};
+// };
 
-function is_priss(player, npc){
-	// 2 nodes: 2 actions
-	if (npc.name == "PRISS"){
-		return player_has_beer(player, npc)
-	}else{
-		return is_wallflower(player, npc)
-	};
-};
+// function is_priss(player, npc){
+// 	// 2 nodes: 2 actions
+// 	if (npc.name == "PRISS"){
+// 		return player_has_beer(player, npc)
+// 	}else{
+// 		return is_wallflower(player, npc)
+// 	};
+// };
 
 function is_wallflower(player, npc){
 	// 2 nodes: 2 actions
@@ -94,12 +95,10 @@ function is_wallflower(player, npc){
 
 function player_is_mixologist(player, npc){
 	// 2 nodes: 2 actions
-	console.log('HERE')
-	console.log(player.mixologist)
 	if (player.mixologist == true){
 		npc.speak('intrig');
 		player.phone_numbers += 1
-		player.has_beer = true
+		npc.quest_complete = true
 		update_stats(player)
 	}else{
 		npc.speak('player_has_beer')
@@ -108,7 +107,12 @@ function player_is_mixologist(player, npc){
 
 
 function walk_tree(player, npc){
-	result = is_bartender(player, npc)
+	console.log('QUEST COMPLETE', npc.quest_complete)
+	if (npc.quest_complete == true){
+		npc.speak('quest_complete')
+	}else{
+		result = which_npc(player, npc)
+	}
 	return result
 };
 
@@ -126,3 +130,28 @@ function update_stats(player){
 };
 
 
+
+
+/// Npc identifying swtch 
+
+function which_npc(player, npc){
+	switch (npc.name){
+		case 'BARTENDER':
+			player_have_money(player, npc)
+			break;
+
+		case 'GIRL1':
+			player_has_beer(player, npc)
+			break;
+
+		case 'PRISS':
+			player_has_beer(player, npc)
+			break;
+
+		case 'WALLFLOWER':
+			is_wallflower(player, npc)
+			break; 
+		}
+
+	};
+ 

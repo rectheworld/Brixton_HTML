@@ -83,6 +83,21 @@ Crafty.c('PlayerCharacter', {
 		.reel('RIGHT', 500, 0, 1, 3)
 		.reel('DOWN', 500, 0, 2, 3)
 		.reel('LEFT', 500, 0, 3, 3)
+		.bind("EnterFrame", function(e){
+				for (i = 0; i < this.npc_list.length; i++){
+					current_npc = this.npc_list[i]
+
+
+					if (this.intersect(current_npc.x - 1, current_npc.y -1 , current_npc.w + 1, current_npc.h + 1) == true){
+						walk_tree(this,current_npc)
+						Game.update_tracker(this, current_npc)
+						current_npc.stopWalk()
+						console.log(current_npc)
+
+						
+					} 
+				}
+			})
 		.bind("KeyDown", function(e){
 			if(e.key == 88){
 				//console.log("A CLICK OF THE X")
@@ -90,13 +105,11 @@ Crafty.c('PlayerCharacter', {
 				for (i = 0; i < this.npc_list.length; i++){
 					current_npc = this.npc_list[i]
 
+
 					if (this.intersect(current_npc.x - 16, current_npc.y -16 , current_npc.w + 32, current_npc.h + 32) == true){
-						// console.log("SPEAK");
-						// console.log(current_npc.name);
-						console.log('Player Mix', this.mixologist)
-						console.log(walk_tree(this,current_npc))
-						Game.update_tracker(this)
-						console.log("Game Tracker After" ,Game.tracker)
+						walk_tree(this,current_npc)
+						Game.update_tracker(this, current_npc)
+						
 					} 
 				}
 
@@ -124,7 +137,7 @@ Crafty.c('PlayerCharacter', {
 		this.bind("EnterFrame", function(eventData){
 			// Check if player is in the mix zone
 			if (this.intersect(mix_zone.zone_space.x, mix_zone.zone_space.y, mix_zone.zone_space.w, mix_zone.zone_space.h)){
-				console.log(true)
+				///console.log(true)
 				if (everyonesTextbox.zoneText === false){
 						text = 'Make a Custon Drink? (y/n)'
 						everyonesTextbox.displayText(text)
@@ -182,38 +195,46 @@ Crafty.c('PlayerCharacter', {
 
 Crafty.c("Girl1", {
 	init: function() {
-		this.requires('Actor, spr_girl1, Solid')
+		this.requires('Actor, spr_girl1, Solid, Tween,Collision')
 		.bind("EnterFrame", function(){
 			test_value = Math.floor((Math.random() * 500) + 1);
-
+			///console.log(this.walk_zone)
 			// on in 50 shot of npc moving
 			if (test_value == 1){
-				console.log("Here")
-				/// Pick a place in the zone 
-				i = Math.floor((Math.random() * this.walk_zone.length)); 
 
-				console.log(this.walk_zone[i])
-				//this.tween({})
-
-
+				this.walk()
 			}
 			
-		}),/// End enter frame 
-		console.log(this.at())
+		})/// End enter frame 
 
 	},
 
 	name: 'GIRL1',
-	quest_complete: false,
 	speakables: {'intro': 'This drink is gross',
-				'player_has_beer': 'Thank you, your a nice guy, here is my number'},
+				'player_has_beer': 'Thank you, your a nice guy, here is my number',
+				'quest_complete':'Thanks Again <3 <3 <3'},
 
 	speak: function(speakable_key){
 		text = this.speakables[speakable_key]
 		everyonesTextbox.displayText(text)
 	},
 
-	walk_zone: [(6,5), (7,5), (8,5), (6,6), (7,6), (8,6), (6,7), (7,7), (8,7)],
+	//walk_zone: [(6,5), (7,5), (8,5), (6,6), (7,6), (8,6), (6,7), (7,7), (8,7)],
+	walk_zone: [[6,5], [7,5], [8,5], [6,6], [7,6], [8,6], [6,7], [7,7], [8,7]],
+
+
+	walk: function(){
+		/// Pick a place in the zone 
+		i = Math.floor((Math.random() * this.walk_zone.length)); 
+		console.log(this.walk_zone[i])
+		x_dest = this.walk_zone[i][0]* Game.map_grid.tile.width
+		y_dest = this.walk_zone[i][1] * Game.map_grid.tile.height
+		this.tween({x: x_dest , y: y_dest},2000)
+	},
+
+	stopWalk: function(){
+		this.cancelTween(this)
+	}, 
 
 })
 
@@ -224,10 +245,10 @@ Crafty.c("Priss", {
 	},
 
 	name: 'PRISS',
-	quest_complete: false,
 	speakables: {'intro': 'Oh.... hey.',
 				'player_has_beer': "Is that a beer? ugg that's so Mainstream",
-				'intrig': 'You really know your drinks, here is my number'},
+				'intrig': 'You really know your drinks, here is my number',
+				'quest_complete' : 'Are you still here?'},
 
 	speak: function(speakable_key){
 		text = this.speakables[speakable_key]
@@ -242,28 +263,44 @@ Crafty.c("Wallflower", {
 	},
 
 	name: 'WALLFLOWER',
-	quest_complete: false,
 	speak_num: 1,
 
 	speakables: {'1': '......',
 				'2': "... Sorry I'm just waiting for someone",
 				'3': '... please stop talking to me',
 				'4': 'If I give you my number will you leave me alone? Ok here ya go.',
-				'5': '.......'},
+				'5': '.......',
+				'quest_complete': '.....' },
 
 	speak: function(speakable_key){
-		if (this.speak_num < 5){
-			this.speak_num += 1
-		}
-		text = this.speakables[String(this.speak_num)]
-		everyonesTextbox.displayText(text)
-		return this.speak_num;
+		if (this.quest_complete == true){
+			text = this.speakables['quest_complete']
+			everyonesTextbox.displayText(text)
+		}else{
+
+			if (this.speak_num < 5){
+				this.speak_num += 1
+			}
+			text = this.speakables[String(this.speak_num)]
+			everyonesTextbox.displayText(text)
+			return this.speak_num;
+	}
 	},
 })
 
 Crafty.c("Bartender", {
 	init: function() {
-		this.requires('Actor, spr_bartender, Solid')
+		this.requires('Actor, spr_bartender, Solid,Tween')
+		.bind("EnterFrame", function(){
+			test_value = Math.floor((Math.random() * 500) + 1);
+			///console.log(this.walk_zone)
+			// on in 50 shot of npc moving
+			if (test_value == 1){
+
+				this.walk()
+			}
+			
+		})/// End enter frame 
 	},
 
 	name:"BARTENDER",
@@ -274,6 +311,22 @@ Crafty.c("Bartender", {
 		text = this.speakables[speakable_key]
 		everyonesTextbox.displayText(text)
 	},
+
+	walk_zone: [[4,0], [5,0],[6,0],[7,0],[8,0]],
+
+
+	walk: function(){
+		/// Pick a place in the zone 
+		i = Math.floor((Math.random() * this.walk_zone.length)); 
+		console.log(this.walk_zone[i])
+		x_dest = this.walk_zone[i][0]* Game.map_grid.tile.width
+		y_dest = this.walk_zone[i][1] * Game.map_grid.tile.height
+		this.tween({x: x_dest , y: y_dest},2000)
+	},
+
+	stopWalk: function(){
+		this.cancelTween(this)
+	}, 
 })
 
 

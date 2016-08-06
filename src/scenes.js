@@ -126,10 +126,16 @@ MAIN = Crafty.scene('Main', function(){
 
 	// Place npcs 
 	this.bartender = Crafty.e('Bartender').at(5,0)
-	this.girl1 = Crafty.e('Girl1').at(7,7)
-	this.priss = Crafty.e('Priss').at(3,2)
-	this.wallflower = Crafty.e('Wallflower').at(14,4)
 
+	this.girl1 = Crafty.e('Girl1').at(7,7)
+	this.girl1.quest_complete = Game.tracker[this.girl1.name]
+
+	this.priss = Crafty.e('Priss').at(3,2)
+	this.priss.quest_complete = Game.tracker[this.priss.name]
+	//console.log('PRISS STATUS',this.priss.quest_complete )
+
+	this.wallflower = Crafty.e('Wallflower').at(14,4)
+	this.wallflower.quest_complete = Game.tracker[this.wallflower.name]
 
 	this.player.npc_list = [this.bartender, this.girl1, this.priss, this.wallflower] 
 	this.player.money = Game.tracker.money
@@ -145,7 +151,7 @@ MAIN = Crafty.scene('Main', function(){
 	create_globals()
 	
 
-	console.log(Game.tracker)
+	///console.log(Game.tracker)
 
 	// Initlize Stats
 	document.getElementById('_time').innerHTML = "10:00"
