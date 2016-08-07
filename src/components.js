@@ -92,7 +92,6 @@ Crafty.c('PlayerCharacter', {
 /*						walk_tree(this,current_npc)
 						Game.update_tracker(this, current_npc)*/
 						current_npc.stopWalk()
-						console.log(current_npc)
 
 						
 					} 
@@ -105,13 +104,50 @@ Crafty.c('PlayerCharacter', {
 				for (i = 0; i < this.npc_list.length; i++){
 					current_npc = this.npc_list[i]
 
+					inTalkZone = false;
 
-					if (this.intersect(current_npc.x - 16, current_npc.y -16 , current_npc.w + 32, current_npc.h + 32) == true){
+
+					// Give prefernece to left right facing conversations 
+					if (this.intersect(current_npc.x + 32,  current_npc.y - 3, current_npc.w / 2, current_npc.h + 6) == true){
+						inTalkZone = true;
+						current_npc.animate('RIGHT',-1)
+					
+					}else if (this.intersect(current_npc.x - 32, current_npc.y - 3, current_npc.w / 2, current_npc.h + 6) == true){
+						inTalkZone = true;
+						current_npc.animate('LEFT',-1)
+					}else if (this.intersect(current_npc.x - 3, current_npc.y -32 , current_npc.w +6, current_npc.h / 2) == true){
+
+						inTalkZone = true;
+						current_npc.animate('UP',-1)
+
+						
+					}else if (this.intersect(current_npc.x -3, current_npc.y +32 , current_npc.w + 6, current_npc.h / 2) == true){
+						inTalkZone = true;
+						current_npc.animate('DOWN',-1)
+						
+					}
+
+
+					/// Stop animation
+					current_npc.pauseAnimation()
+					/// If were in postion exicute game logic 
+					if(inTalkZone){
+						walk_tree(this,current_npc)
+					}
+
+						
+					/// Bartended has slightly different rules because you can order from in from of the bar 	
+					if(current_npc.name == "BARTENDER"){
+						if (this.intersect(current_npc.x - 16, current_npc.y -16 , current_npc.w + 32, (current_npc.h + 32 * 3)) == true){
 						walk_tree(this,current_npc)
 						Game.update_tracker(this, current_npc)
-						
-					} 
+						} // End of in statment 
+
 				}
+
+				Game.update_tracker(this, current_npc)
+
+				} // End of list of npc loop
 
 			}
 
@@ -231,7 +267,6 @@ Crafty.c("Girl1", {
 	walk: function(){
 		/// Pick a place in the zone 
 		i = Math.floor((Math.random() * this.walk_zone.length)); 
-		console.log(this.walk_zone[i])
 		x_dest = this.walk_zone[i][0]* Game.map_grid.tile.width
 		y_dest = this.walk_zone[i][1] * Game.map_grid.tile.height
 		this.tween({x: x_dest , y: y_dest},2000)
@@ -269,7 +304,22 @@ Crafty.c("Girl1", {
 
 Crafty.c("Priss", {
 	init: function() {
-		this.requires('Actor, spr_priss, Solid')
+		this.requires('Actor, spr_priss, Solid, SpriteAnimation')
+		.reel('UP', 500, 11, 0, 1)
+		.reel('RIGHT', 500, 11, 1, 1)
+		.reel('DOWN', 500, 11, 2, 1)
+		.reel('LEFT', 500, 11, 3, 1)
+		.bind("EnterFrame", function(){
+			test_value = Math.floor((Math.random() * 500) + 1);
+			//console.log(this.x, this.y)
+			// on in 50 shot of npc moving
+
+			if (test_value == 1){
+
+				this.walk()
+			}
+			
+		})/// End enter frame 
 	},
 
 	name: 'PRISS',
@@ -283,6 +333,18 @@ Crafty.c("Priss", {
 		everyonesTextbox.displayText(text)
 	},
 
+	walk: function(){
+		i = Math.floor((Math.random() * 3));
+
+		if(i == 0){
+			this.animate("LEFT",1)
+		}else if(i ==1){
+			this.animate("DOWN",1)
+		}else if(i ==2){
+			this.animate("RIGHT",1)
+		}
+	},
+
 	stopWalk: function(){
 		null
 	}
@@ -291,7 +353,11 @@ Crafty.c("Priss", {
 
 Crafty.c("Wallflower", {
 	init: function() {
-		this.requires('Actor, spr_wallflower, Solid')
+		this.requires('Actor, spr_wallflower, Solid, SpriteAnimation')
+		.reel('UP', 500, 14, 0, 3)
+		.reel('RIGHT', 500, 14, 1, 3)
+		.reel('DOWN', 500, 14, 2, 3)
+		.reel('LEFT', 500, 14, 3, 3)
 	},
 
 	name: 'WALLFLOWER',
@@ -357,7 +423,6 @@ Crafty.c("Bartender", {
 	walk: function(){
 		/// Pick a place in the zone 
 		i = Math.floor((Math.random() * this.walk_zone.length)); 
-		console.log(this.walk_zone[i])
 		x_dest = this.walk_zone[i][0]* Game.map_grid.tile.width
 		y_dest = this.walk_zone[i][1] * Game.map_grid.tile.height
 		this.tween({x: x_dest , y: y_dest},2000)
