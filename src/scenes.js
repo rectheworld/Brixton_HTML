@@ -35,7 +35,9 @@ Crafty.scene('Loading', function(){
 	      spr_mens: [2,4],
 	      spr_womens:[2,5],
 	      spr_bartender:[8,2],
-	      spr_girl1:[5,2]
+	      spr_girl1:[5,2],
+	      spr_priss: [11,2],
+		  spr_wallflower: [14,3]
 	    });
 
 	    Crafty.sprite(32, 16, 'assets/spritesheet1.png', {
@@ -54,8 +56,6 @@ Crafty.scene('Loading', function(){
 	   	Crafty.sprite(32, 32, 'assets/bar_spritesheet.png', {
 		  spr_bar_left: [0,0],
 		  spr_bar_right: [6,0],
-		  spr_priss: [2,3],
-		  spr_wallflower: [3,3]
 	     });
 
 	   	Crafty.sprite(224, 16, 'assets/bar_spritesheet.png', {
@@ -142,7 +142,11 @@ MAIN = Crafty.scene('Main', function(){
 	this.player.money = Game.tracker.money
 	this.player.mixologist = Game.tracker.mixologist
 	this.player.phone_numbers = Game.tracker.phone_numbers
-	this.player.has_beer = Game.tracker.has_beer
+	this.player.drinks = Game.tracker.drinks
+	console.log(this.player.drinks)
+
+	// Stats
+	update_stats(this.player)
 
 	// Moxologist zones 
 	mix_zone = Crafty.e('Zone')
@@ -152,18 +156,11 @@ MAIN = Crafty.scene('Main', function(){
 	create_globals()
 	
 
-	///console.log(Game.tracker)
-
-	// Initlize Stats
-	document.getElementById('_time').innerHTML = "10:00"
-	document.getElementById('_money').innerHTML = this.player.money
-	document.getElementById('_numbers').innerHTML = this.player.phone_numbers
-	document.getElementById('_drink').innerHTML = "0"
 });
 
 
 // Scene for drink making 
 MAIN = Crafty.scene('Mixing', function(){
 	this.bar_back = Crafty.e('Mix_Main').at(0,0)
-	//this.empty = Crafty.e('Empty_Glass').at(0,0)
+
 });

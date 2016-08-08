@@ -84,74 +84,26 @@ Crafty.c('PlayerCharacter', {
 		.reel('DOWN', 500, 0, 2, 3)
 		.reel('LEFT', 500, 0, 3, 3)
 		.bind("EnterFrame", function(e){
-				for (i = 0; i < this.npc_list.length; i++){
-					current_npc = this.npc_list[i]
+				/// On each frame check for npc or zone interation
+				this.zonesAndNPCs()
+				//console.log(this.drinks)
 
-
-					if (this.intersect(current_npc.x - 1, current_npc.y -1 , current_npc.w + 1, current_npc.h + 1) == true){
-/*						walk_tree(this,current_npc)
-						Game.update_tracker(this, current_npc)*/
-						current_npc.stopWalk()
-
-						
-					} 
-				}
 			})
 		.bind("KeyDown", function(e){
 			if(e.key == 88){
 				//console.log("A CLICK OF THE X")
+				this.zonesAndNPCs(xpress = true)
+			}if(e.key == 37 ||
+				e.key == 38 ||
+				e.key == 39 ||
+				e.key == 40){
 
-				for (i = 0; i < this.npc_list.length; i++){
-					current_npc = this.npc_list[i]
-
-					inTalkZone = false;
-
-
-					// Give prefernece to left right facing conversations 
-					if (this.intersect(current_npc.x + 32,  current_npc.y - 3, current_npc.w / 2, current_npc.h + 6) == true){
-						inTalkZone = true;
-						current_npc.animate('RIGHT',-1)
-					
-					}else if (this.intersect(current_npc.x - 32, current_npc.y - 3, current_npc.w / 2, current_npc.h + 6) == true){
-						inTalkZone = true;
-						current_npc.animate('LEFT',-1)
-					}else if (this.intersect(current_npc.x - 3, current_npc.y -32 , current_npc.w +6, current_npc.h / 2) == true){
-
-						inTalkZone = true;
-						current_npc.animate('UP',-1)
-
-						
-					}else if (this.intersect(current_npc.x -3, current_npc.y +32 , current_npc.w + 6, current_npc.h / 2) == true){
-						inTalkZone = true;
-						current_npc.animate('DOWN',-1)
-						
-					}
-
-
-					/// Stop animation
-					current_npc.pauseAnimation()
-					/// If were in postion exicute game logic 
-					if(inTalkZone){
-						walk_tree(this,current_npc)
-					}
-
-						
-					/// Bartended has slightly different rules because you can order from in from of the bar 	
-					if(current_npc.name == "BARTENDER"){
-						if (this.intersect(current_npc.x - 16, current_npc.y -16 , current_npc.w + 32, (current_npc.h + 32 * 3)) == true){
-						walk_tree(this,current_npc)
-						Game.update_tracker(this, current_npc)
-						} // End of in statment 
-
-				}
-
-				Game.update_tracker(this, current_npc)
-
-				} // End of list of npc loop
+				/// clena up npc animation if we move away from them
+				current_npc.recover()
 
 			}
 
-		});
+		}); // End of keydown function
 
 		// Watch for a change of a direction and switch the animation 
 		var animation_speed = 4;
@@ -169,9 +121,69 @@ Crafty.c('PlayerCharacter', {
 			}
 		});
 
-		// Check if in mixologist zone 
-		this.bind("EnterFrame", function(eventData){
-			// Check if player is in the mix zone
+	},
+
+	/// Callback function to run everyframe or when we key a keydown 
+	zonesAndNPCs: function(Xpress = false){
+		for (i = 0; i < this.npc_list.length; i++){
+			current_npc = this.npc_list[i]
+
+
+			if(Xpress == true){
+
+				/// Are we talking to an npc?
+				inTalkZone = false;
+
+
+				// Give prefernece to left right facing conversations 
+				if (this.intersect(current_npc.x + 32,  current_npc.y - 3, current_npc.w / 2, current_npc.h + 6) == true){
+					inTalkZone = true;
+					current_npc.animate('RIGHT',-1)
+				
+				}else if (this.intersect(current_npc.x - 32, current_npc.y - 3, current_npc.w / 2, current_npc.h + 6) == true){
+					inTalkZone = true;
+					current_npc.animate('LEFT',-1)
+				}else if (this.intersect(current_npc.x - 3, current_npc.y -32 , current_npc.w +6, current_npc.h / 2) == true){
+
+					inTalkZone = true;
+					current_npc.animate('UP',-1)
+
+					
+				}else if (this.intersect(current_npc.x -3, current_npc.y +32 , current_npc.w + 6, current_npc.h / 2) == true){
+					inTalkZone = true;
+					current_npc.animate('DOWN',-1)
+					
+				}
+
+
+
+
+				current_npc.pauseAnimation()
+				/// If were in postion exicute game logic 
+				if(inTalkZone){
+					walk_tree(this,current_npc)
+				}
+					
+				/// Bartended has slightly different rules because you can order from in from of the bar 	
+				if(current_npc.name == "BARTENDER"){
+					if (this.intersect(current_npc.x - 16, current_npc.y -16 , current_npc.w + 32, (current_npc.h + 32 * 3)) == true){
+					walk_tree(this,current_npc)
+					Game.update_tracker(this, current_npc)
+					} // End of in statment 
+
+			}
+
+			Game.update_tracker(this, current_npc)
+		} /// End of xpress statment 
+		/// If we are close to an npc that is voving top the movemnt of the npc 
+		else if (this.intersect(current_npc.x - 1, current_npc.y -1 , current_npc.w + 1, current_npc.h + 1) == true){
+				current_npc.stopWalk()
+
+				
+		} /// end of stop npc movment stament 
+		/// check if in mix zones 
+		else {
+
 			if (this.intersect(mix_zone.zone_space.x, mix_zone.zone_space.y, mix_zone.zone_space.w, mix_zone.zone_space.h)){
 				///console.log(true)
 				if (everyonesTextbox.zoneText === false){
@@ -187,6 +199,8 @@ Crafty.c('PlayerCharacter', {
 							this.unbind("KeyDown", mix_callback)
 						}else if (e.key == 78){
 							everyonesTextbox.removeText();		
+
+
 						}
 					});
 
@@ -196,21 +210,19 @@ Crafty.c('PlayerCharacter', {
 				if (everyonesTextbox.zoneText === true){
 				everyonesTextbox.removeText();
 				everyonesTextbox.zoneText = false;
+
+
 				}
-			}
-		}); // end of enter frame function 
-
-	},
-	
-	/// Variable Zoo 
-	//has_beer: false,
-	//money: 77,
-	//phone_numbers: 77,
-	/// Indicates if player has made a custon drink
-	//mixologist: false,
+				} // End of text box cleaner 
 
 
 
+				} /// end of zones statments 
+
+
+		} // End of npc loop
+
+	},	
 
 	stopOnSolids: function() {
 		this.onHit('Solid', this.stopMovement);
@@ -260,7 +272,6 @@ Crafty.c("Girl1", {
 		everyonesTextbox.displayText(text)
 	},
 
-	//walk_zone: [(6,5), (7,5), (8,5), (6,6), (7,6), (8,6), (6,7), (7,7), (8,7)],
 	walk_zone: [[6,5], [7,5], [8,5], [6,6], [7,6], [8,6], [6,7], [7,7], [8,7]],
 
 
@@ -298,6 +309,10 @@ Crafty.c("Girl1", {
 	stopWalk: function(){
 		this.cancelTween(this)
 	}, 
+
+	recover: function(){
+		null
+	}
 
 })
 
@@ -347,6 +362,10 @@ Crafty.c("Priss", {
 
 	stopWalk: function(){
 		null
+	},
+
+	recover: function(){
+		null
 	}
 })
 
@@ -386,6 +405,10 @@ Crafty.c("Wallflower", {
 	},
 	stopWalk: function(){
 		null
+	},
+	recover: function(){
+		this.animate("LEFT",-1)
+		this.pauseAnimation()
 	}
 })
 
@@ -452,7 +475,11 @@ Crafty.c("Bartender", {
 
 	stopWalk: function(){
 		this.cancelTween(this)
-	}, 
+	},
+
+	recover: function(){
+		null
+	} 
 })
 
 
@@ -618,7 +645,10 @@ Crafty.c('Mix_Main', {
 			if(e.key == 88){
 				if (this.drink_finished == true){
 					Game.tracker.mixologist = true 
-					Game.tracker.has_beer = true;
+					Game.tracker.drinks += 1;
+					Game.tracker.position_x = 8;
+					Game.tracker.position_y = 0;
+				}else{
 					Game.tracker.position_x = 8;
 					Game.tracker.position_y = 0;
 				}
@@ -683,7 +713,6 @@ Crafty.c('Mix_Main', {
 			if (mini_rect._y <=  this_bottle._y + this_bottle._h && mini_rect._y >=  this_bottle._y){
 				if (this.progress_count < 3){
 					this.progress_count += 1
-					console.log(this.progress_count)
 					Crafty.e(this.progress[this.progress_count]).at(0,0)
 				}else{
 					if (i == 6){

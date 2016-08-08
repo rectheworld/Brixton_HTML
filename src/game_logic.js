@@ -6,15 +6,16 @@
 
 function player_has_beer(player, npc){
 	// 2 Children : Nodes 
-	if (player.has_beer) {
+	if (player.drinks >= 1) {
 
 		switch (npc.name){
 			case 'GIRL1':
 				npc.speak('player_has_beer')
 				npc.quest_complete = true
-				player.has_beer = false
+				player.drinks -= 1
 				player.phone_numbers += 1
 				update_stats(player)
+				player.mixologist = false
 
 				break;
 			case 'PRISS':
@@ -29,25 +30,16 @@ function player_has_beer(player, npc){
 };
 
 
-// function is_bartender(player, npc){
-// 	// 1 Action 1 Node
-// 	if (npc.name == 'BARTENDER'){
-// 		return player_have_money(player, npc)
-// 	} else {
-// 		return is_girl(player, npc)
-// 	};
-// };
-
 function player_have_money(player, npc){
 	// 2 actions
 	if (player.money > 7){
 
-		if (player.has_beer == true){
+		if (player.drinks > 1){
 			// For right now he can only have one drink 
 			console.log("You already have a drink!")
 		} else {
 			npc.speak('intro')
-			player.has_beer = true
+			player.drinks += 1
 			player.money = player.money - 7
 			update_stats(player)
 			return 'GIVE THE MAN A DRINK!'
@@ -58,24 +50,6 @@ function player_have_money(player, npc){
 		return "DUDE, your Broke!"
 	};
 };
-
-// function is_girl(player, npc){
-// 	// 2 nodes: 2 actions
-// 	if (npc.name == "GIRL1"){
-// 		return player_has_beer(player, npc)
-// 	}else{
-// 		return is_priss(player, npc)
-// 	};
-// };
-
-// function is_priss(player, npc){
-// 	// 2 nodes: 2 actions
-// 	if (npc.name == "PRISS"){
-// 		return player_has_beer(player, npc)
-// 	}else{
-// 		return is_wallflower(player, npc)
-// 	};
-// };
 
 function is_wallflower(player, npc){
 	// 2 nodes: 2 actions
@@ -99,9 +73,12 @@ function player_is_mixologist(player, npc){
 		npc.speak('intrig');
 		player.phone_numbers += 1
 		npc.quest_complete = true
+		player.drinks -= 1
+		player.mixologist = false
 		update_stats(player)
 	}else{
 		npc.speak('player_has_beer')
+
 	};
 };
 
@@ -118,15 +95,11 @@ function walk_tree(player, npc){
 
 
 function update_stats(player){
+
 	document.getElementById('_money').innerHTML = String(player.money)
 	document.getElementById('_numbers').innerHTML = String(player.phone_numbers)
-	if (player.has_beer == true){
-		drink_val = 1
-	}else{
-		drink_val = 0
-	}
+	document.getElementById('_drink').innerHTML = String(player.drinks)
 
-	document.getElementById('_drink').innerHTML = String(drink_val)
 };
 
 

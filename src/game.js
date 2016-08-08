@@ -27,7 +27,7 @@ Game = {
 	'phone_numbers': 0, 
 	'money': 10, 
 	'mixologist': false, 
-	'has_beer':false, 
+	'drinks':0, 
 	'position_x': 7, 
 	'position_y': 5,
 	'GIRL1': false,
@@ -36,18 +36,11 @@ Game = {
 	},
 
 	update_tracker: function(player, npc){
-
-/*		console.log(this_npc)
-		this.tracker = {
-		'phone_numbers': player.phone_numbers, 
-		'money': player.money, 
-		'mixologist': player.mixologist, 
-		'has_beer': player.has_beer}*/
 		
 		this.tracker.phone_numbers = player.phone_numbers 
 		this.tracker.money = player.money
 		this.tracker.mixologist = player.mixologist
-		has_beer = player.has_beer
+		this.tracker.drinks = player.drinks
 		this.tracker[npc.name] = npc.quest_complete
 	},
 
